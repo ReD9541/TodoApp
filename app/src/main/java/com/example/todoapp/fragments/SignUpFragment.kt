@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class SignUpFragment : Fragment() {
 
-    private lateinit var auth:FirebaseAuth
+    private lateinit var auth: FirebaseAuth
     private lateinit var navController: NavController
     private lateinit var binding: SignupFragmentBinding
 
@@ -25,9 +25,9 @@ class SignUpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
 
-    ): View?  {
+    ): View? {
 
-        binding = SignupFragmentBinding.inflate(inflater,container,false)
+        binding = SignupFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -37,36 +37,51 @@ class SignUpFragment : Fragment() {
         registerEvents()
     }
 
-    private fun init(view:View){
+    private fun init(view: View) {
         navController = Navigation.findNavController(view)
         auth = FirebaseAuth.getInstance()
     }
 
     private fun registerEvents() {
-        binding.AuthTextView.setOnClickListener{
+        binding.AuthTextView.setOnClickListener {
             navController.navigate(R.id.action_signUpFragment_to_loginFragment)
         }
 
-        binding.NextBtn.setOnClickListener{
+        binding.NextBtn.setOnClickListener {
             val email = binding.EmailET.text.toString().trim()
             val pass = binding.PasswordET.text.toString().trim()
             val rePass = binding.ConfirmPasswordET.text.toString().trim()
 
-            if (email.isNotEmpty() && pass.isNotEmpty() && rePass.isNotEmpty()){
-                if (pass == rePass){
-                    auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(
+            if (email.isEmpty() && pass.isEmpty() && rePass.isEmpty()) {
+                Toast.makeText(context, "Please Fill up the empty fields", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                if (pass != rePass) {
+                    Toast.makeText(
+                        context,
+                        "Your retyped password doesn't match with the password.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    binding.progressBar.visibility = View.VISIBLE
+                    auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(
                         OnCompleteListener {
-                            if (it.isSuccessful){
-                                Toast.makeText(context ,"Registration Successful!! You may now Login..", Toast.LENGTH_SHORT).show()
+                            if (it.isSuccessful) {
+                                Toast.makeText(
+                                    context,
+                                    "Registration Successful!! You may now Login..",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 navController.navigate(R.id.action_signUpFragment_to_loginFragment)
-                            }else{
-                                Toast.makeText(context , it.exception?.message, Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, it.exception?.message, Toast.LENGTH_SHORT)
+                                    .show()
                             }
+                            binding.progressBar.visibility = View.GONE
                         }
                     )
                 }
             }
-
         }
     }
 }

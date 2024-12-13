@@ -25,40 +25,47 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = LoginFragmentBinding.inflate(inflater,container,false)
+        binding = LoginFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
         loginEvents()
     }
 
-    private fun init(view:View){
+    private fun init(view: View) {
         navController = Navigation.findNavController(view)
         auth = FirebaseAuth.getInstance()
     }
 
     private fun loginEvents() {
-        binding.AuthTextView.setOnClickListener{
+        binding.AuthTextView.setOnClickListener {
             navController.navigate(R.id.action_loginFragment_to_signUpFragment)
         }
 
-        binding.NextBtn.setOnClickListener{
+        binding.nextBtn.setOnClickListener {
             val email = binding.EmailET.text.toString().trim()
             val pass = binding.PasswordET.text.toString().trim()
 
-            if (email.isNotEmpty() && pass.isNotEmpty()){
-                    auth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(
-                        OnCompleteListener {
-                            if (it.isSuccessful){
-                                Toast.makeText(context ,"Login Successful", Toast.LENGTH_SHORT).show()
-                                navController.navigate(R.id.action_loginFragment_to_homeFragment)
-                            }else{
-                                Toast.makeText(context , it.exception?.message, Toast.LENGTH_SHORT).show()
-                            }
+            if (email.isEmpty() && pass.isEmpty()) {
+                Toast.makeText(context, "Please Fill up the empty fields", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                binding.progressBar.visibility = View.VISIBLE
+                auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(
+                    OnCompleteListener {
+                        if (it.isSuccessful) {
+                            Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                            navController.navigate(R.id.action_loginFragment_to_homeFragment)
+                        } else {
+                            Toast.makeText(context, it.exception?.message, Toast.LENGTH_SHORT)
+                                .show()
                         }
-                    )
+                        binding.progressBar.visibility = View.GONE
+                    }
+                )
             }
 
         }

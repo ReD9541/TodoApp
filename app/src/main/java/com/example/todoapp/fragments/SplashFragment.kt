@@ -14,8 +14,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 class SplashFragment : Fragment() {
 
-    private lateinit var  auth:FirebaseAuth
-    private lateinit var  navController: NavController
+    private lateinit var auth: FirebaseAuth
+    private lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,9 +31,9 @@ class SplashFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         navController = Navigation.findNavController(view)
         Handler(Looper.myLooper()!!).postDelayed(Runnable {
-            if(auth.currentUser != null){
+            if (auth.currentUser != null) {
                 navController.navigate(R.id.action_splashFragment_to_homeFragment)
-            }else{
+            } else {
                 navController.navigate(R.id.action_splashFragment_to_loginFragment)
             }
         }, 2000)
