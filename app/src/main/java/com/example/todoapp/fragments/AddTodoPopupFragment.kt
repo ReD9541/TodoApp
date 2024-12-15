@@ -39,13 +39,14 @@ class AddTodoPopupFragment : DialogFragment() {
     }
 
     private fun addTodoEvent() {
-        binding.TodoNextBtn.setOnClickListener {
+        binding.TodoNextbtn.setOnClickListener {
             val todoTask = binding.TodotaskET.text.toString()
-            if (todoTask.isEmpty()) {
-                Toast.makeText(context, "Please fill type your task first", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
+            if (todoTask.isNotEmpty()) {
+                Toast.makeText(context, "Saving your task", Toast.LENGTH_SHORT).show()
                 listener.onSaveTask(todoTask, binding.TodotaskET)
+            } else {
+                Toast.makeText(context, "Please type your task first", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -54,4 +55,14 @@ class AddTodoPopupFragment : DialogFragment() {
         fun onSaveTask(todo: String, todoET: TextInputEditText)
 
     }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+    }
+
 }
